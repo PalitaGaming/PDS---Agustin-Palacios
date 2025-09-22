@@ -22,17 +22,7 @@ public class MenuManager : MonoBehaviour
 
     private void Awake()
     {
-        principalCanvas = GameObject.Find("PrincipalCanvas").GetComponent<Canvas>();
-        optionsCanvas = GameObject.Find("OptionsCanvas").GetComponent<Canvas>();
-        creditsCanvas = GameObject.Find("CreditsCanvas").GetComponent<Canvas>();
-        playTxt = GameObject.Find("PlayTxt").GetComponent<Text>();
-        optionsTxt = GameObject.Find("OptionsTxt").GetComponent<Text>();
-        creditsTxt = GameObject.Find("CreditsTxt").GetComponent<Text>();
-        creditsTo = GameObject.Find("CreditsTo").GetComponent<Text>();
-        backTxt = GameObject.Find("BackTxt").GetComponent<Text>();
-        back2Txt = GameObject.Find("BackTxt2").GetComponent<Text>();
-        exitTxt = GameObject.Find("ExitTxt").GetComponent<Text>();
-        languajeTxt = GameObject.Find("LanguajeTxt").GetComponent<Text>();
+       
     }
 
     public void GoToLvl(int lvlIndex)
