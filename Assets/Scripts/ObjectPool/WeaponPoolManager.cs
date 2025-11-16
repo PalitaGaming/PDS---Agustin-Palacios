@@ -2,65 +2,58 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// WeaponPoolManager.cs
-
 
 public class WeaponPoolManager : MonoBehaviour
 {
-    public GameObject Prefab;
-    public List<GameObject> ObjectsInPool;
-    public float weaponRate = 0.5f;
-    [SerializeField] int poolSize = 15;
+    [Header("References")]
+    public Transform firePoint;
+    public GameObject bulletPrefab;
+    public SpriteRenderer playerSpriteRenderer;
 
-    float shootTimer;
-    [SerializeField] Transform firePoint;
+    [Header("Pooling")]
+    public int poolSize = 10;
 
-    void Start()
+    [Header("Weapon Settings")]
+    public float fireRate = 0.2f;
+    private float fireCooldown = 0f;
+
+    private List<GameObject> pool;
+
+    private void Awake()
     {
-        CreateThings(poolSize); // Llama al Factory al inicio
+        pool = new List<GameObject>();
+
+        for (int i = 0; i < poolSize; i++)
+        {
+            GameObject obj = Instantiate(bulletPrefab);
+            obj.SetActive(false);
+            pool.Add(obj);
+        }
     }
 
     private void Update()
     {
-        shootTimer -= Time.deltaTime;
+        fireCooldown -= Time.deltaTime;
     }
 
-    // Patrón FACTORY
-    void CreateThings(int amount)
-    {
-        ObjectsInPool = new List<GameObject>();
-        for (int i = 0; i < amount; i++)
-        {
-            GameObject s = Instantiate(Prefab);
-            ObjectsInPool.Add(s);
-            s.SetActive(false);
-            s.transform.SetParent(this.transform);
-        }
-    }
-
-    // Patrón OBJECT POOLING
     public void ShootFromPool()
     {
-        if (shootTimer > 0) return;
+            if (fireCooldown > 0f) return;
 
-        for (int i = 0; i < ObjectsInPool.Count; i++)
-        {
-            if (!ObjectsInPool[i].activeSelf)
+            foreach (GameObject bullet in pool)
             {
-                GameObject bullet = ObjectsInPool[i];
+                if (!bullet.activeSelf)
+                {
+                    bullet.transform.position = firePoint.position;
 
-                // Posición y Rotación: Usamos el FirePoint para la dirección
-                bullet.transform.position = firePoint.position;
-                bullet.transform.rotation = firePoint.rotation;
+                    // LA ROTACIÓN CORRECTA:
+                    bullet.transform.rotation = firePoint.rotation;
 
-                // Asegura que el vector de velocidad del Rigidbody2D apunte correctamente
-                // (Esto es manejado en FixedUpdate de Bullet2D, solo activamos)
-
-                bullet.SetActive(true);
-                shootTimer = weaponRate;
-
-                break;
+                    bullet.SetActive(true);
+                    fireCooldown = fireRate;
+                    return;
+                }
             }
         }
-    }
-}
+ }
+
