@@ -6570,7 +6570,7 @@ PrefabInstance:
     - target: {fileID: 6872966102431634411, guid: c57c0522b41656f45af238a8abf58cd6, type: 3}
       propertyPath: transformPlayer
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 794199660}
     - target: {fileID: 6872966102431634411, guid: c57c0522b41656f45af238a8abf58cd6, type: 3}
       propertyPath: LayerPlayer.m_Bits
       value: 64

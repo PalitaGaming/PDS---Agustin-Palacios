@@ -4,49 +4,56 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float Speed = 2;
-    public float jumpForce = 3;
+    // --- PROPIEDADES PÚBLICAS Y COMPONENTES ---
+    public float Speed = 2f;
+    public float jumpForce = 3f;
     public SpriteRenderer spriteRenderer;
     public Animator animator;
 
-    Rigidbody2D rb;
+    // --- COMPONENTES PRIVADOS ACCESIBLES ---
+    public Rigidbody2D rb { get; private set; }
+
+    // Propiedad Helper para el suelo (asumiendo que 'CheckGround' es un script estático o accesible)
+    public bool IsGrounded => CheckGround.isGrounded;
+
+    // --- FSM PROPIEDADES ---
+    private IState currentState;
+    public IState CurrentState => currentState;
+
+    // Instancias de estados (reutilizables)
+    public PlayerIdleState IdleState { get; private set; }
+    public PlayerRunState RunState { get; private set; }
+    public PlayerJumpState JumpState { get; private set; }
+
+    // Asumiendo que CheckGround.isGrounded existe y funciona para 2D.
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+
+        // Inicializar todas las instancias de estado
+        IdleState = new PlayerIdleState(this);
+        RunState = new PlayerRunState(this);
+        JumpState = new PlayerJumpState(this);
+    }
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        // El estado inicial es IDLE
+        ChangeState(IdleState);
     }
 
     void FixedUpdate()
     {
-        if(Input.GetKey("d") || Input.GetKey("right"))
-        {
-            rb.velocity = new Vector2(Speed, rb.velocity.y);
-            spriteRenderer.flipX = false;
-            animator.SetBool("Movement", true);
-        }
-        else if (Input.GetKey("a") || Input.GetKey("left"))
-        {
-            rb.velocity = new Vector2(-Speed, rb.velocity.y);
-            spriteRenderer.flipX = true;
-            animator.SetBool("Movement", true);
-        }
-        else
-        {
-            rb.velocity = new Vector2(0, rb.velocity.y);
-            animator.SetBool("Movement", false);
-        }
-        if(Input.GetKey("space") && CheckGround.isGrounded)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-        }
-        if (CheckGround.isGrounded == false)
-        {
-            animator.SetBool("Jump", true);
-            animator.SetBool("Movement", false);
-        }
-        else
-        {
-            animator.SetBool("Jump", false) ;
-        }
+        // Delegamos la lógica al estado actual
+        currentState?.FixedUpdate();
+    }
+
+    // Método clave para la transición
+    public void ChangeState(IState newState)
+    {
+        currentState?.Exit();
+        currentState = newState;
+        currentState.Enter();
     }
 }
