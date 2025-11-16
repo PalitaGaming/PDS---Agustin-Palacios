@@ -39,8 +39,19 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        // El estado inicial es IDLE
-        ChangeState(IdleState);
+        // 1. Verificar la condición inicial del suelo
+        if (IsGrounded)
+        {
+            // Si está en el suelo, establece el estado inicial como IDLE.
+            ChangeState(IdleState);
+        }
+        else
+        {
+            // Si NO está en el suelo (cae desde arriba), establece el estado inicial como JUMP.
+            // Esto asegura que la animación de salto/caída se active inmediatamente.
+            // Nota: Usamos JumpState para la lógica de caída en el aire.
+            ChangeState(JumpState);
+        }
     }
 
     void FixedUpdate()
