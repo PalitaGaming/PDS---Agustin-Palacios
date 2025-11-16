@@ -51,6 +51,11 @@ public class PlayerRunState : IState
         {
             player.ChangeState(player.JumpState); // Usamos JumpState para la lógica de aire/caída
         }
+
+        if (Input.GetKey(KeyCode.K)) // Presionando K para atacar
+        {
+            player.ChangeState(player.AttackState);
+        }
     }
 
     public void Exit() { /* Limpieza */ }

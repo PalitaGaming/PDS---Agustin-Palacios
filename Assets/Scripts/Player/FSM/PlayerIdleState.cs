@@ -44,6 +44,10 @@ public class PlayerIdleState : IState
         {
             player.ChangeState(player.JumpState);
         }
+        if (Input.GetKey(KeyCode.K)) // Presionando K para atacar
+        {
+            player.ChangeState(player.AttackState);
+        }
     }
 
     public void Exit() { /* Limpieza */ }

@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 3f;
     public SpriteRenderer spriteRenderer;
     public Animator animator;
+    public WeaponPoolManager poolManager;
 
     // --- COMPONENTES PRIVADOS ACCESIBLES ---
     public Rigidbody2D rb { get; private set; }
@@ -24,6 +25,7 @@ public class PlayerController : MonoBehaviour
     public PlayerIdleState IdleState { get; private set; }
     public PlayerRunState RunState { get; private set; }
     public PlayerJumpState JumpState { get; private set; }
+    public PlayerAttackState AttackState { get; private set; }
 
     // Asumiendo que CheckGround.isGrounded existe y funciona para 2D.
 
@@ -35,6 +37,7 @@ public class PlayerController : MonoBehaviour
         IdleState = new PlayerIdleState(this);
         RunState = new PlayerRunState(this);
         JumpState = new PlayerJumpState(this);
+        AttackState = new PlayerAttackState(this);
     }
 
     void Start()

@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4359809633561909842}
   - component: {fileID: 8038670056567374504}
-  - component: {fileID: 5894665300961399997}
   - component: {fileID: -8290824230812801743}
   - component: {fileID: 6459690915615520346}
   - component: {fileID: -5266282350196278258}
+  - component: {fileID: 6491617450698299541}
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Untagged
@@ -90,19 +90,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5894665300961399997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6431363517022390482}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 846096c1cf566674abd4a6f2c2d71d9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 100
 --- !u!58 &-8290824230812801743
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -133,7 +120,7 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -188,3 +175,16 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6491617450698299541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6431363517022390482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97f3137bc968bb64598fc6d63ed2bb12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 40
