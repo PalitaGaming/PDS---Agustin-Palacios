@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+// PlayerIdleState.cs (Modificado)
 using UnityEngine;
-
 
 public class PlayerIdleState : IState
 {
@@ -14,10 +12,10 @@ public class PlayerIdleState : IState
 
     public void Enter()
     {
-        // Lógica al entrar: Detener movimiento horizontal
+        // En Enter, aseguras que inicie quieto, pero el FixedUpdate debe mantenerlo quieto.
         player.rb.velocity = new Vector2(0f, player.rb.velocity.y);
         player.animator.SetBool("Movement", false);
-        player.animator.SetBool("Jump", !player.IsGrounded); // Podría entrar aquí si aterriza sin input
+        player.animator.SetBool("Jump", !player.IsGrounded);
     }
 
     public void FixedUpdate()
@@ -26,6 +24,15 @@ public class PlayerIdleState : IState
         bool inputMoveLeft = Input.GetKey("a") || Input.GetKey("left");
         bool inputMoveRight = Input.GetKey("d") || Input.GetKey("right");
         bool inputJump = Input.GetKey("space");
+
+        // --- MODIFICACIÓN CLAVE ---
+        // Si no hay input de movimiento Y está en el suelo, forzar rb.velocity.x a 0.
+        // Esto previene el deslizamiento en rampas.
+        if (player.IsGrounded && !inputMoveLeft && !inputMoveRight)
+        {
+            player.rb.velocity = new Vector2(0f, player.rb.velocity.y);
+        }
+        // --------------------------
 
         // Transición a Correr
         if (inputMoveLeft || inputMoveRight)
@@ -36,12 +43,6 @@ public class PlayerIdleState : IState
         else if (inputJump && player.IsGrounded)
         {
             player.ChangeState(player.JumpState);
-        }
-        // Transición a Caer (implícito si ya no está en el suelo)
-        else if (!player.IsGrounded)
-        {
-            // Opcional: Podrías cambiar a un estado 'FallingState' si necesitas lógica específica para la caída.
-            // Por ahora, asumimos que se gestiona la lógica de caer dentro del JumpState.
         }
     }
 

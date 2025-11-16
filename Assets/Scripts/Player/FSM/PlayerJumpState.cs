@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PlayerJumpState : IState
 {
     private PlayerController player;
-    // float horizontalInput; // Opcional: Puedes usar GetKey/GetAxisRaw directamente
+    private const float JumpCutMultiplier = 0.5f; // Factor para cortar el salto
 
     public PlayerJumpState(PlayerController player)
     {
@@ -22,34 +23,46 @@ public class PlayerJumpState : IState
         {
             player.rb.velocity = new Vector2(player.rb.velocity.x, player.jumpForce);
         }
-        // Si entra porque se cayó de una plataforma, simplemente maneja el movimiento en el aire
     }
 
     public void FixedUpdate()
     {
         bool inputMoveLeft = Input.GetKey("a") || Input.GetKey("left");
         bool inputMoveRight = Input.GetKey("d") || Input.GetKey("right");
+        bool inputJump = Input.GetKey("space"); // Necesitas verificar la tecla de salto aquí
 
-        // 1. Movimiento Horizontal en el Aire (Air Control)
+        // 1. Control Horizontal en el Aire (¡MODIFICADO!)
         float horizontalInput = 0;
         if (inputMoveRight) horizontalInput = 1;
         else if (inputMoveLeft) horizontalInput = -1;
 
         if (horizontalInput != 0)
         {
+            // Aplica la nueva velocidad horizontal y voltea el sprite
             player.rb.velocity = new Vector2(horizontalInput * player.Speed, player.rb.velocity.y);
             player.spriteRenderer.flipX = horizontalInput < 0;
         }
-        else
+        // *******************************************************************
+        // CAMBIO CLAVE: Cuando horizontalInput es 0, no hacemos nada con rb.velocity.x.
+        // El Rigidbody2D mantiene la velocidad horizontal existente (inercia) 
+        // y el Drag (fricción) en el Rigidbody lo desacelerará lentamente, 
+        // lo que simula la capacidad de "quedarse quieto" o mantener la inercia en el aire.
+        // *******************************************************************
+
+        // 2. Control de Altura del Salto (SALTO CORTO / Caída Controlada)
+        // Condición: Si el jugador suelta la tecla 'space' Y el personaje aún está subiendo (rb.velocity.y > 0)
+        if (!inputJump && player.rb.velocity.y > 0)
         {
-            // Si no hay input horizontal, mantener la velocidad X actual, pero sin forzar a 0
-            // (el drag de Rigidbody2D se encargará de desacelerar naturalmente).
+            // Reduce la velocidad vertical bruscamente para cortar el salto.
+            player.rb.velocity = new Vector2(player.rb.velocity.x, player.rb.velocity.y * JumpCutMultiplier);
         }
 
-        // 2. Transición a Aterrizaje
+        // 3. Transición a Aterrizaje
         if (player.IsGrounded && player.rb.velocity.y <= 0)
         {
-            if (horizontalInput != 0)
+            // Nota: Aquí ya no usamos 'horizontalInput' para la transición, 
+            // sino la velocidad horizontal real del cuerpo para decidir si ir a Run o Idle.
+            if (Mathf.Abs(player.rb.velocity.x) > 0.05f) // Si aún hay movimiento horizontal significativo
             {
                 player.ChangeState(player.RunState);
             }
