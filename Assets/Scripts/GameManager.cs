@@ -66,11 +66,6 @@ public class GameManager : MonoBehaviour
         return new Vector3(posX, posY, posZ);
     }
 
-
-    //---------SFX------------
-
-
-
     public void AddSoundVolume()
 
     {
@@ -78,8 +73,6 @@ public class GameManager : MonoBehaviour
         audioSource.volume += 0.1f;
 
     }
-
-
 
     public void SubstractSoundVolume()
 

@@ -2,90 +2,78 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyPatrolEdge : MonoBehaviour
+
+public class CrabMovement : MonoBehaviour
 {
-    [Header("Movimiento")]
+
     public float speed = 2f;
-    public bool movingRight = true;
+    public float waitTime = 1f;
+    public Transform[] patrolPoints;
 
-    [Header("Detección de bordes")]
-    public Transform groundCheck;
-    public float groundCheckDistance = 1f;
-    public LayerMask groundLayer;
 
-    [Header("Componentes")]
-    public SpriteRenderer spriteRenderer;
+    private int currentPointIndex;
     private Rigidbody2D rb;
+    private Animator animator;
+    private SpriteRenderer spriteRenderer;
 
-    private void Awake()
+    void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-    }
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
-    private void Update()
-    {
-        Patrol();
-        EdgeDetection();
-    }
-
-    void Patrol()
-    {
-        // Movimiento horizontal
-        float dir = movingRight ? 1f : -1f;
-        rb.velocity = new Vector2(dir * speed, rb.velocity.y);
-
-        // Rotación visual del sprite
-        spriteRenderer.flipX = !movingRight;
-    }
-
-    void EdgeDetection()
-    {
-        // Raycast hacia abajo desde groundCheck
-        RaycastHit2D hit = Physics2D.Raycast(
-            groundCheck.position,
-            Vector2.down,
-            groundCheckDistance,
-            groundLayer
-        );
-
-        // SI NO HAY PISO = doy la vuelta
-        if (hit.collider == null)
+        if (patrolPoints.Length == 0)
         {
-            Flip();
+            Debug.LogError("El enemigo no tiene puntos de patrullaje asignados. ¡Deteniendo patrulla!");
+            enabled = false;
+            return;
         }
 
-        // Raycast frontal para detectar paredes
-        RaycastHit2D wallHit = Physics2D.Raycast(
-            groundCheck.position,
-            movingRight ? Vector2.right : Vector2.left,
-            0.2f,
-            groundLayer
-        );
+        StartCoroutine(PatrolRoutine());
+    }
 
-        if (wallHit.collider != null)
+
+    private IEnumerator PatrolRoutine()
+    {
+        while (true)
         {
-            Flip();
+            Vector2 targetPosition = patrolPoints[currentPointIndex].position;
+            animator.SetBool("IsWalking", true);
+
+            while (Vector2.Distance(transform.position, targetPosition) > 0.1f)
+            {
+
+                Vector2 moveDirection = (targetPosition - (Vector2)transform.position).normalized;
+
+                transform.Translate(moveDirection * speed * Time.deltaTime, Space.World);
+                
+                FlipSprite(moveDirection.x);
+                yield return null;
+            }
+
+            if (rb != null) rb.velocity = Vector2.zero;
+            transform.position = targetPosition;
+            animator.SetBool("IsWalking", false);
+
+            yield return new WaitForSeconds(waitTime);
+
+            currentPointIndex = (currentPointIndex + 1) % patrolPoints.Length;
         }
     }
-
-    void Flip()
+    private void FlipSprite(float directionX)
     {
-        movingRight = !movingRight;
-    }
+        if (spriteRenderer == null) return; 
 
-    private void OnDrawGizmosSelected()
-    {
-        if (groundCheck == null) return;
-
-        // Gizmo raycast piso
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(groundCheck.position,
-                        groundCheck.position + Vector3.down * groundCheckDistance);
-
-        // Gizmo raycast pared
-        Gizmos.color = Color.red;
-        Vector3 dir = movingRight ? Vector3.right : Vector3.left;
-        Gizmos.DrawLine(groundCheck.position, groundCheck.position + dir * 0.2f);
+        if (directionX < 0.01f)
+        {
+            
+            spriteRenderer.flipX = false;
+        }
+        else 
+        {
+            spriteRenderer.flipX = true;
+        }
+        
     }
 }
 
