@@ -7,6 +7,7 @@ public class Bullet : MonoBehaviour
 {
     [SerializeField] float speed = 10f;
     Rigidbody2D rb;
+    public int damageAmount = 1;
 
     private Vector2 direction;
 
@@ -39,6 +40,13 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision) 
     {
+        EnemyHealth enemyHealth = collision.GetComponent<EnemyHealth>();
+        
+
+        if (enemyHealth != null)
+        {
+            enemyHealth.TakeDamage(damageAmount);
+        }
         gameObject.SetActive(false);
     }
 }
