@@ -8,6 +8,13 @@ public class Bullet : MonoBehaviour
     [SerializeField] float speed = 10f;
     Rigidbody2D rb;
 
+    private Vector2 direction;
+
+    public void SetDirection(Vector2 newDirection)
+    {
+        direction = newDirection;
+    }
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -15,11 +22,9 @@ public class Bullet : MonoBehaviour
 
     private void OnEnable()
     {
-        // Reiniciar velocidad cada vez que la bala reaparece
-        rb.velocity = transform.right * speed;
+        rb.velocity = direction * speed;
 
-        // Desactivación automática
-        Invoke(nameof(DisableBullet), 3f);
+        Invoke(nameof(DisableBullet), 3f); 
     }
 
     private void DisableBullet()
@@ -32,7 +37,7 @@ public class Bullet : MonoBehaviour
         CancelInvoke();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision) 
     {
         gameObject.SetActive(false);
     }

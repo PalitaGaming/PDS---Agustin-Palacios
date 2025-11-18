@@ -38,22 +38,41 @@ public class WeaponPoolManager : MonoBehaviour
 
     public void ShootFromPool()
     {
-            if (fireCooldown > 0f) return;
+        if (fireCooldown > 0f) return;
 
-            foreach (GameObject bullet in pool)
+        foreach (GameObject bullet in pool)
+        {
+            if (!bullet.activeSelf)
             {
-                if (!bullet.activeSelf)
+                bullet.transform.position = firePoint.position;
+
+
+                Vector2 playerDirection = firePoint.right;
+
+                if (playerSpriteRenderer.flipX)
                 {
-                    bullet.transform.position = firePoint.position;
-
-                    // LA ROTACIÓN CORRECTA:
-                    bullet.transform.rotation = firePoint.rotation;
-
-                    bullet.SetActive(true);
-                    fireCooldown = fireRate;
-                    return;
+                    playerDirection = Vector2.right;
                 }
+                else
+                {
+                    playerDirection = Vector2.left;
+                }
+
+                Vector2 oppositeDirection = -playerDirection; // <-- Usamos la dirección opuesta
+
+                float angle = Mathf.Atan2(oppositeDirection.y, oppositeDirection.x) * Mathf.Rad2Deg;
+                bullet.transform.rotation = Quaternion.Euler(0f, 0f, angle);
+
+                Bullet bulletScript = bullet.GetComponent<Bullet>();
+                bulletScript.SetDirection(oppositeDirection);
+
+                Debug.Log("Bala activada en posición: " + firePoint.position);
+
+                bullet.SetActive(true);
+                fireCooldown = fireRate;
+                return;
             }
         }
- }
+    }
+}
 
