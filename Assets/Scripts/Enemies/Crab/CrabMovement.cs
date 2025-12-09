@@ -24,7 +24,7 @@ public class CrabMovement : MonoBehaviour
 
         if (patrolPoints.Length == 0)
         {
-            Debug.LogError("El enemigo no tiene puntos de patrullaje asignados. ¡Deteniendo patrulla!");
+            Debug.LogError("El enemigo no tiene puntos de patrullaje asignados.");
             enabled = false;
             return;
         }

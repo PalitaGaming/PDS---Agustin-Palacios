@@ -23,7 +23,6 @@ public class PlayerRunState : IState
         bool inputMoveRight = Input.GetKey("d") || Input.GetKey("right");
         bool inputJump = Input.GetKey("space");
 
-        // 1. Lógica de Movimiento
         if (inputMoveRight)
         {
             player.rb.velocity = new Vector2(player.Speed, player.rb.velocity.y);
@@ -36,27 +35,25 @@ public class PlayerRunState : IState
         }
         else
         {
-            // 2. Transición a Quieto (si el input horizontal se detiene)
             player.ChangeState(player.IdleState);
             return;
         }
 
-        // 3. Transición a Saltar
         if (inputJump && player.IsGrounded)
         {
             player.ChangeState(player.JumpState);
         }
-        // 4. Transición a Caer (si se cae de una plataforma)
+
         else if (!player.IsGrounded && player.rb.velocity.y <= 0)
         {
-            player.ChangeState(player.JumpState); // Usamos JumpState para la lógica de aire/caída
+            player.ChangeState(player.JumpState);
         }
 
-        if (Input.GetKey(KeyCode.K)) // Presionando K para atacar
+        if (Input.GetKey(KeyCode.K))
         {
             player.ChangeState(player.AttackState);
         }
     }
 
-    public void Exit() { /* Limpieza */ }
+    public void Exit() { }
 }

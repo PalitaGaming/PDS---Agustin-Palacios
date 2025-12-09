@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
         if (IsInvulnerable || currentLives <= 0) return;
 
         currentLives--;
-        Debug.Log("Vida restante: " + currentLives);
+        Debug.Log("Vidas restantes: " + currentLives);
 
         if (currentLives > 0)
         {
@@ -98,10 +98,32 @@ public class PlayerController : MonoBehaviour
             rb.velocity = Vector2.zero;
             rb.AddForce(knockbackDirection * knockbackForce, ForceMode2D.Impulse);
 
-            if (blinkCoroutine != null)
-            {
-                StopCoroutine(blinkCoroutine);
-            }
+            if (blinkCoroutine != null) StopCoroutine(blinkCoroutine);
+            blinkCoroutine = StartCoroutine(BlinkEffect());
+        }
+        else
+        {
+            Die();
+        }
+    }
+
+    public void FallDamage(Vector3 respawnPosition)
+    {
+        if (currentLives <= 0) return;
+
+        currentLives--;
+        Debug.Log("El jugador se cayó al vacío. Vidas: " + currentLives);
+
+        if (currentLives > 0)
+        {
+            transform.position = respawnPosition;
+
+            ResetStateForRespawn();
+
+
+            IsInvulnerable = true;
+
+            if (blinkCoroutine != null) StopCoroutine(blinkCoroutine);
             blinkCoroutine = StartCoroutine(BlinkEffect());
         }
         else
@@ -141,11 +163,15 @@ public class PlayerController : MonoBehaviour
     private void Die()
     {
         Debug.Log("Game Over. Vidas agotadas.");
-
         rb.velocity = Vector2.zero;
 
-    }
+        if (GameManager.GMSharedInstance != null)
+        {
+            GameManager.GMSharedInstance.GameOver();
+        }
 
+        this.enabled = false;
+    }
 
     public void ResetStateForRespawn()
     {
@@ -158,7 +184,9 @@ public class PlayerController : MonoBehaviour
         {
             StopCoroutine(blinkCoroutine);
         }
+
         IsInvulnerable = false;
+
         if (spriteRenderer != null)
         {
             spriteRenderer.enabled = true;
@@ -166,6 +194,5 @@ public class PlayerController : MonoBehaviour
         }
 
         animator.Play("IdlePlayer", 0, 0f);
-
     }
 }

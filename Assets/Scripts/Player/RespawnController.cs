@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class RespawnController : MonoBehaviour
 {
     public float limiteCaidaY = -10f;
@@ -15,8 +14,8 @@ public class RespawnController : MonoBehaviour
 
         if (playerController == null)
         {
-            Debug.LogError("ControladorRespawn requiere un componente PlayerController en el mismo GameObject.");
             enabled = false;
+            return;
         }
 
         if (GameManager.GMSharedInstance != null)
@@ -36,13 +35,19 @@ public class RespawnController : MonoBehaviour
 
     private void PlatformRespawn()
     {
-        Vector3 posicionGuardada = GameManager.GMSharedInstance.LoadPositionData();
+        Vector3 posicionGuardada = Vector3.zero;
 
-        transform.position = posicionGuardada;
+        if (GameManager.GMSharedInstance != null)
+        {
+            posicionGuardada = GameManager.GMSharedInstance.LoadPositionData();
+        }
+        else
+        {
+            posicionGuardada = new Vector3(0, 0, 0);
+        }
 
-        playerController.ResetStateForRespawn();
+        playerController.FallDamage(posicionGuardada);
 
-        Debug.Log("¡Jugador reaparecido y estado de FSM reiniciado!");
+        Debug.Log("Caída detectada por límite");
     }
 }
-
