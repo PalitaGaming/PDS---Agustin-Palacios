@@ -58,7 +58,7 @@ public class WeaponPoolManager : MonoBehaviour
                     playerDirection = Vector2.left;
                 }
 
-                Vector2 oppositeDirection = -playerDirection; // <-- Usamos la dirección opuesta
+                Vector2 oppositeDirection = -playerDirection;
 
                 float angle = Mathf.Atan2(oppositeDirection.y, oppositeDirection.x) * Mathf.Rad2Deg;
                 bullet.transform.rotation = Quaternion.Euler(0f, 0f, angle);
