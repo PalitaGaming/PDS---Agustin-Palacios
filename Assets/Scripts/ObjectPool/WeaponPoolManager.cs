@@ -66,8 +66,6 @@ public class WeaponPoolManager : MonoBehaviour
                 Bullet bulletScript = bullet.GetComponent<Bullet>();
                 bulletScript.SetDirection(oppositeDirection);
 
-                Debug.Log("Bala activada en posición: " + firePoint.position);
-
                 bullet.SetActive(true);
                 fireCooldown = fireRate;
                 return;

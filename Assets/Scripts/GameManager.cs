@@ -10,8 +10,8 @@ public class GameManager : MonoBehaviour
 
     [Header("Audio Config")]
     [Tooltip("Arrastra aquí la música de fondo. El Elemento 0 es para el Nivel 0, etc.")]
-    [SerializeField] AudioClip[] clips; // Música de fondo por nivel
-    public AudioClip deathClip;         // Sonido de muerte
+    [SerializeField] AudioClip[] clips;
+    public AudioClip deathClip;
 
     [Header("Interfaz de Usuario (UI)")]
     public GameObject gameOverPanel;
@@ -24,7 +24,6 @@ public class GameManager : MonoBehaviour
         if (GMSharedInstance == null)
         {
             GMSharedInstance = this;
-            // Quitamos DontDestroyOnLoad para evitar problemas de UI fantasmas
         }
         else
         {
@@ -45,7 +44,6 @@ public class GameManager : MonoBehaviour
         MusicLogic();
     }
 
-    // --- TUS FUNCIONES DE SAVE/LOAD (IGUAL QUE ANTES) ---
     public void SaveData(int score, float posX, float posY, float posZ)
     {
         PlayerPrefs.SetInt("score", score);
@@ -58,7 +56,6 @@ public class GameManager : MonoBehaviour
     {
         return new Vector3(PlayerPrefs.GetFloat("posX"), PlayerPrefs.GetFloat("posY"), PlayerPrefs.GetFloat("posZ"));
     }
-    // ----------------------------------------------------
 
     public void AddSoundVolume() { if (audioSource) audioSource.volume += 0.1f; }
     public void SubstractSoundVolume() { if (audioSource) audioSource.volume -= 0.1f; }
@@ -69,11 +66,10 @@ public class GameManager : MonoBehaviour
 
         audioSource.Stop();
 
-        // Verifica si hay música asignada para este nivel
         if (SceneManager.GetActiveScene().buildIndex < clips.Length)
         {
             audioSource.clip = clips[SceneManager.GetActiveScene().buildIndex];
-            audioSource.loop = true; // Importante: que la música se repita
+            audioSource.loop = true;
             audioSource.Play();
         }
     }
@@ -85,10 +81,8 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("GAME OVER");
 
-        // 1. Detenemos la música de fondo
         if (audioSource != null) audioSource.Stop();
 
-        // 2. Reproducimos el sonido de muerte una vez
         if (deathClip != null && audioSource != null)
         {
             audioSource.PlayOneShot(deathClip);
