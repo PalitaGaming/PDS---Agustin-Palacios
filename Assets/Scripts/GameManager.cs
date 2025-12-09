@@ -6,12 +6,9 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager GMSharedInstance;
-    AudioSource audioSource;
 
-    [Header("Audio Config")]
-    [Tooltip("Arrastra aquí la música de fondo. El Elemento 0 es para el Nivel 0, etc.")]
-    [SerializeField] AudioClip[] clips;
-    public AudioClip deathClip;
+    [Header("Subsistemas (Patrón Facade)")]
+    public MusicManager musicSystem;
 
     [Header("Interfaz de Usuario (UI)")]
     public GameObject gameOverPanel;
@@ -24,6 +21,7 @@ public class GameManager : MonoBehaviour
         if (GMSharedInstance == null)
         {
             GMSharedInstance = this;
+
         }
         else
         {
@@ -33,15 +31,26 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        audioSource = GetComponent<AudioSource>();
-
         Time.timeScale = 1f;
         isGameOver = false;
 
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
         if (victoryPanel != null) victoryPanel.SetActive(false);
 
-        MusicLogic();
+        if (musicSystem != null)
+        {
+            musicSystem.InitializeMusic();
+        }
+    }
+
+    public void AddSoundVolume()
+    {
+        if (musicSystem != null) musicSystem.ModifyVolume(0.1f);
+    }
+
+    public void SubstractSoundVolume()
+    {
+        if (musicSystem != null) musicSystem.ModifyVolume(-0.1f);
     }
 
     public void SaveData(int score, float posX, float posY, float posZ)
@@ -57,23 +66,6 @@ public class GameManager : MonoBehaviour
         return new Vector3(PlayerPrefs.GetFloat("posX"), PlayerPrefs.GetFloat("posY"), PlayerPrefs.GetFloat("posZ"));
     }
 
-    public void AddSoundVolume() { if (audioSource) audioSource.volume += 0.1f; }
-    public void SubstractSoundVolume() { if (audioSource) audioSource.volume -= 0.1f; }
-
-    public void MusicLogic()
-    {
-        if (audioSource == null) return;
-
-        audioSource.Stop();
-
-        if (SceneManager.GetActiveScene().buildIndex < clips.Length)
-        {
-            audioSource.clip = clips[SceneManager.GetActiveScene().buildIndex];
-            audioSource.loop = true;
-            audioSource.Play();
-        }
-    }
-
     public void GameOver()
     {
         if (isGameOver) return;
@@ -81,12 +73,7 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("GAME OVER");
 
-        if (audioSource != null) audioSource.Stop();
-
-        if (deathClip != null && audioSource != null)
-        {
-            audioSource.PlayOneShot(deathClip);
-        }
+        if (musicSystem != null) musicSystem.PlayDeathSound();
 
         Time.timeScale = 0f;
 

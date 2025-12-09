@@ -1844,6 +1844,7 @@ GameObject:
   - component: {fileID: 1330088116}
   - component: {fileID: 1330088115}
   - component: {fileID: 1330088117}
+  - component: {fileID: 1330088118}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1863,10 +1864,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c41d624d63d78464b87847e42be25d26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clips:
-  - {fileID: 8300000, guid: 244e3b16c3b1f5847bc789676f37f931, type: 3}
-  - {fileID: 8300000, guid: 082f60b92bd429448acb1150c5ce7f37, type: 3}
-  deathClip: {fileID: 8300000, guid: 36176e89bbd1abc44867c8c87df42d27, type: 3}
+  musicSystem: {fileID: 0}
   gameOverPanel: {fileID: 1770960634}
   victoryPanel: {fileID: 1958314634}
   isGameOver: 0
@@ -1895,8 +1893,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 244e3b16c3b1f5847bc789676f37f931, type: 3}
+  m_Resource: {fileID: 8300000, guid: 244e3b16c3b1f5847bc789676f37f931, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -1982,6 +1980,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1330088118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1330088114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f60bc86b3d3faf439c380ee4c3a6ffb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  musicSource: {fileID: 0}
+  clips:
+  - {fileID: 8300000, guid: 082f60b92bd429448acb1150c5ce7f37, type: 3}
+  - {fileID: 8300000, guid: 244e3b16c3b1f5847bc789676f37f931, type: 3}
+  deathClip: {fileID: 8300000, guid: 36176e89bbd1abc44867c8c87df42d27, type: 3}
 --- !u!1 &1375120491
 GameObject:
   m_ObjectHideFlags: 0

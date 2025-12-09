@@ -2277,6 +2277,7 @@ GameObject:
   - component: {fileID: 1354098546}
   - component: {fileID: 1354098545}
   - component: {fileID: 1354098544}
+  - component: {fileID: 1354098547}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2393,9 +2394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c41d624d63d78464b87847e42be25d26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clips:
-  - {fileID: 8300000, guid: 244e3b16c3b1f5847bc789676f37f931, type: 3}
-  deathClip: {fileID: 0}
+  musicSystem: {fileID: 0}
   gameOverPanel: {fileID: 0}
   victoryPanel: {fileID: 0}
   isGameOver: 0
@@ -2414,6 +2413,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1354098547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1354098543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f60bc86b3d3faf439c380ee4c3a6ffb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  musicSource: {fileID: 0}
+  clips:
+  - {fileID: 8300000, guid: 244e3b16c3b1f5847bc789676f37f931, type: 3}
+  deathClip: {fileID: 0}
 --- !u!1 &1374892659
 GameObject:
   m_ObjectHideFlags: 0
