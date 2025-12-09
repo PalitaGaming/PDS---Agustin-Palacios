@@ -10,7 +10,7 @@ public class CheckPoint : MonoBehaviour
         {
             GameManager.GMSharedInstance.SaveData(10, other.transform.position.x, other.transform.position.y, other.transform.position.z);
 
-            Debug.Log("Checkpoint alcanzado. Nueva posición guardada: " + other.transform.position); 
+            Debug.Log("Checkpoint alcanzado"); 
         }
     }
 }

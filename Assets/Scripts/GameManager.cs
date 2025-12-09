@@ -7,7 +7,11 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager GMSharedInstance;
     AudioSource audioSource;
-    [SerializeField] AudioClip[] clips;
+
+    [Header("Audio Config")]
+    [Tooltip("Arrastra aquí la música de fondo. El Elemento 0 es para el Nivel 0, etc.")]
+    [SerializeField] AudioClip[] clips; // Música de fondo por nivel
+    public AudioClip deathClip;         // Sonido de muerte
 
     [Header("Interfaz de Usuario (UI)")]
     public GameObject gameOverPanel;
@@ -20,6 +24,7 @@ public class GameManager : MonoBehaviour
         if (GMSharedInstance == null)
         {
             GMSharedInstance = this;
+            // Quitamos DontDestroyOnLoad para evitar problemas de UI fantasmas
         }
         else
         {
@@ -40,6 +45,7 @@ public class GameManager : MonoBehaviour
         MusicLogic();
     }
 
+    // --- TUS FUNCIONES DE SAVE/LOAD (IGUAL QUE ANTES) ---
     public void SaveData(int score, float posX, float posY, float posZ)
     {
         PlayerPrefs.SetInt("score", score);
@@ -48,15 +54,11 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetFloat("posZ", posZ);
     }
 
-    public void LoadData()
-    {
-        Debug.Log("Score=" + PlayerPrefs.GetInt("Score"));
-    }
-
     public Vector3 LoadPositionData()
     {
         return new Vector3(PlayerPrefs.GetFloat("posX"), PlayerPrefs.GetFloat("posY"), PlayerPrefs.GetFloat("posZ"));
     }
+    // ----------------------------------------------------
 
     public void AddSoundVolume() { if (audioSource) audioSource.volume += 0.1f; }
     public void SubstractSoundVolume() { if (audioSource) audioSource.volume -= 0.1f; }
@@ -64,15 +66,17 @@ public class GameManager : MonoBehaviour
     public void MusicLogic()
     {
         if (audioSource == null) return;
+
         audioSource.Stop();
+
+        // Verifica si hay música asignada para este nivel
         if (SceneManager.GetActiveScene().buildIndex < clips.Length)
         {
             audioSource.clip = clips[SceneManager.GetActiveScene().buildIndex];
+            audioSource.loop = true; // Importante: que la música se repita
             audioSource.Play();
         }
     }
-    public void DangerMomentSFX() { if (clips.Length > 3) audioSource.PlayOneShot(clips[3]); }
-
 
     public void GameOver()
     {
@@ -80,6 +84,15 @@ public class GameManager : MonoBehaviour
         isGameOver = true;
 
         Debug.Log("GAME OVER");
+
+        // 1. Detenemos la música de fondo
+        if (audioSource != null) audioSource.Stop();
+
+        // 2. Reproducimos el sonido de muerte una vez
+        if (deathClip != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(deathClip);
+        }
 
         Time.timeScale = 0f;
 
@@ -93,22 +106,15 @@ public class GameManager : MonoBehaviour
     {
         if (isGameOver) return;
         isGameOver = true;
-
         Debug.Log("VICTORIA");
-
         Time.timeScale = 0f;
-
-        if (victoryPanel != null)
-        {
-            victoryPanel.SetActive(true);
-        }
+        if (victoryPanel != null) victoryPanel.SetActive(true);
     }
 
     public void RestartLevel()
     {
         Time.timeScale = 1f;
         isGameOver = false;
-
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -116,7 +122,6 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         isGameOver = false;
-
         SceneManager.LoadScene("MainMenu");
     }
 }
